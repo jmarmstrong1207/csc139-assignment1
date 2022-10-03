@@ -62,7 +62,7 @@ void *ping(void *arg)
 void *dir(void *arg)
 {
     std::cout << "Files in current working directory\n";
-    system("dir");
+    system("ls");
     pthread_exit(0);
 }
 
@@ -101,15 +101,30 @@ void *color(void *arg)
     std::cout << "Select the color\n";
     const char *arg1 = str[0].c_str();
     const char *arg2 = str[1].c_str();
+    const char *arg3 = str[2].c_str();
 
     char cmd[256];
-    strcpy(cmd, "color ");
+    strcpy(cmd, "echo (Linux doesn't have a color command, so I will just echo the arguments inputted. color ");
     strcat(cmd, arg1);
     strcat(cmd, " ");
     strcat(cmd, arg2);
     strcat(cmd, " ");
+    strcat(cmd, arg3);
     system(cmd);
     pthread_exit(0);
+}
+void *help(void *arg)
+{
+    std::cout << "Commands (linux only):\n";
+    std::cout << "dir - Show current directory\n";
+    std::cout << "help - Show this help list\n";
+    std::cout << "vol - List volumes in Linux\n";
+    std::cout << "path - show PATH var\n";
+    std::cout << "notepad - Open nano in current directory\n";
+    std::cout << "tasklist - Show processes running\n";
+    std::cout << "echo *arg1* *arg2* *arg3* *arg4* - Print out arg1-4\n";
+    std::cout << "color *arg1* *arg2* *arg3* - Not a linux cmd, so it prints out arg1-3. Arguments should be rgb values 0-255\n";
+    std::cout << "ping *address* - ping an address\n";
 }
 
 int main()
@@ -122,7 +137,7 @@ int main()
         cout << "Enter command: ";
         getline(cin, cmd);
 
-        std::cout << "Enter at most 4 arguments separated with spaces: ";
+        std::cout << "Enter at most 4 arguments separated with spaces (Enter nothing if no arguments): ";
         string input;
         getline(cin, input);
 
@@ -147,12 +162,11 @@ int main()
         else if (cmd == "notepad")
             error = pthread_create(&thread, NULL, &notepad, NULL);
 
-
         else if (cmd == "vol")
-                    error = pthread_create(&thread, NULL, &vol, NULL);
+            error = pthread_create(&thread, NULL, &vol, NULL);
 
         else if (cmd == "ping")
-                    error = pthread_create(&thread, NULL, &ping, args);
+            error = pthread_create(&thread, NULL, &ping, args);
 
         else if (cmd == "dir")
             error = pthread_create(&thread, NULL, &dir, NULL);
@@ -161,24 +175,13 @@ int main()
             error = pthread_create(&thread, NULL, &echo, args);
         
         else if (cmd == "color")
-            error = pthread_create(&thread, NULL, &color, NULL);
-        
+            error = pthread_create(&thread, NULL, &color, args);
+
         else if (cmd == "tasklist")
             error = pthread_create(&thread, NULL, &color, NULL);
 
-        /*
-                        else if (cmd == "help")
-                            error = pthread_create(&thread, NULL, &help, NULL);
-
-                        else if (cmd == "color")
-                            error = pthread_create(&thread, NULL, &color, NULL);
-
-                        else if (cmd == "path")
-                            error = pthread_create(&thread, NULL, &path, NULL);
-
-                        else if (cmd == "notepad")
-                            error = pthread_create(&thread, NULL, &notepad, NULL);
-                */
+        else if (cmd == "help")
+            error = pthread_create(&thread, NULL, &help, NULL);
 
         if (error)
             cout << "Failed to create thread\n";
