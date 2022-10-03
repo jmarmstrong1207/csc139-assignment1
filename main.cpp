@@ -57,6 +57,8 @@ void *ping(void *arg)
     char cmd[256];
     strcpy(cmd, "ping -c 4 ");
     strcat(cmd, address);
+    system(cmd);
+    pthread_exit(0);
 }
 
 void *dir(void *arg)
@@ -90,7 +92,7 @@ void *echo(void *arg)
 void *tasklist(void *arg)
 {
     std::cout << "All the task running currently \n";
-    system("tasklist");
+    system("ps -A");
     pthread_exit(0);
 }
 
@@ -98,13 +100,12 @@ void *tasklist(void *arg)
 void *color(void *arg)
 {
     string *str = (string *)arg;
-    std::cout << "Select the color\n";
     const char *arg1 = str[0].c_str();
     const char *arg2 = str[1].c_str();
     const char *arg3 = str[2].c_str();
 
     char cmd[256];
-    strcpy(cmd, "echo (Linux doesn't have a color command, so I will just echo the arguments inputted. color ");
+    strcpy(cmd, "echo Linux doesnt have a color command, so I will just echo the arguments inputted. color ");
     strcat(cmd, arg1);
     strcat(cmd, " ");
     strcat(cmd, arg2);
@@ -129,9 +130,9 @@ void *help(void *arg)
 
 int main()
 {
-    string *args = new string[4];
     while (1)
     {
+        string *args = new string[4];
         string cmd;
 
         cout << "Enter command: ";
@@ -178,7 +179,7 @@ int main()
             error = pthread_create(&thread, NULL, &color, args);
 
         else if (cmd == "tasklist")
-            error = pthread_create(&thread, NULL, &color, NULL);
+            error = pthread_create(&thread, NULL, &tasklist, NULL);
 
         else if (cmd == "help")
             error = pthread_create(&thread, NULL, &help, NULL);
@@ -190,6 +191,7 @@ int main()
 
         // Wait for thread to stop
         pthread_join(thread, NULL);
+        delete[] args;
     }
     return 0;
 }
