@@ -100,18 +100,17 @@ void *tasklist(void *arg)
 void *color(void *arg)
 {
     string *str = (string *)arg;
-    const char *arg1 = str[0].c_str();
-    const char *arg2 = str[1].c_str();
-    const char *arg3 = str[2].c_str();
+    string arg1 = str[0];
+    string arg2 = str[1];
 
-    char cmd[256];
-    strcpy(cmd, "echo Linux doesnt have a color command, so I will just echo the arguments inputted. color ");
-    strcat(cmd, arg1);
-    strcat(cmd, " ");
-    strcat(cmd, arg2);
-    strcat(cmd, " ");
-    strcat(cmd, arg3);
-    system(cmd);
+    string cmd;
+    cmd = "printf '\\e[38;5;" + arg1 + "m'";
+    system(cmd.c_str());
+
+    cmd = "printf '\\e[48;5;" + arg2 + "m\n'";
+    system(cmd.c_str());
+
+    cout << "Color changed!" << endl;
     pthread_exit(0);
 }
 void *help(void *arg)
@@ -124,7 +123,7 @@ void *help(void *arg)
     std::cout << "notepad - Open nano in current directory\n";
     std::cout << "tasklist - Show processes running\n";
     std::cout << "echo *arg1* *arg2* *arg3* *arg4* - Print out arg1-4\n";
-    std::cout << "color *arg1* *arg2* *arg3* - Not a linux cmd, so it prints out arg1-3. Arguments should be rgb values 0-255\n";
+    std::cout << "color *arg1* *arg2* - arg1 changes foreground, arg2 background. valid arg values is 0-255\n";
     std::cout << "ping *address* - ping an address\n";
 }
 
