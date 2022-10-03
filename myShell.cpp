@@ -184,6 +184,12 @@ int main()
         else if (cmd == "help")
             error = pthread_create(&thread, NULL, &help, NULL);
 
+        else if (cmd == "quit")
+        {
+            cout << "Exiting program" << endl;
+            return 0;
+        }
+
         if (error)
             cout << "Failed to create thread\n";
         else
