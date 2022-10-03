@@ -87,6 +87,31 @@ void *echo(void *arg)
     pthread_exit(0);
 }
 
+void *tasklist(void *arg)
+{
+    std::cout << "All the task running currently \n";
+    system("tasklist");
+    pthread_exit(0);
+}
+
+
+void *color(void *arg)
+{
+    string *str = (string *)arg;
+    std::cout << "Select the color\n";
+    const char *arg1 = str[0].c_str();
+    const char *arg2 = str[1].c_str();
+
+    char cmd[256];
+    strcpy(cmd, "color ");
+    strcat(cmd, arg1);
+    strcat(cmd, " ");
+    strcat(cmd, arg2);
+    strcat(cmd, " ");
+    system(cmd);
+    pthread_exit(0);
+}
+
 int main()
 {
     string *args = new string[4];
@@ -134,6 +159,12 @@ int main()
 
         else if (cmd == "echo")
             error = pthread_create(&thread, NULL, &echo, args);
+        
+        else if (cmd == "color")
+            error = pthread_create(&thread, NULL, &color, NULL);
+        
+        else if (cmd == "tasklist")
+            error = pthread_create(&thread, NULL, &color, NULL);
 
         /*
                         else if (cmd == "help")
